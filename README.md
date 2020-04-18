@@ -1,4 +1,4 @@
-# mic-connect
+# nuxt-register
 
 > My impressive Nuxt.js project
 
