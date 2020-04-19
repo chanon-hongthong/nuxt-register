@@ -1,0 +1,62 @@
+#SETUP NUXT JS-REGISTER Firebase Run on Nginx HTTP
+
+docker login
+สร้าง Repository บน Docker Hub ให้ชื่อตรงกัน
+docker build -t chanon1986/nuxt-register .
+docker push chanon1986/nuxt-register:latest
+
+ref:https://phoenixnap.com/kb/how-to-install-docker-centos-7
+ref:https://linuxize.com/post/how-to-install-and-use-docker-compose-on-centos-7
+ถ้าต้องการโหลด version เฉพาะ ให้เข้าไปอ่านด้านบน
+
+sudo yum update
+
+#install docker
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo systemctl status docker 0
+
+#install docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+#docker pull application
+docker pull chanon1986/nuxt-register:latest
+nano docker-compose.yml
+docker-compose up -d
+
+#Original Command
+docker container ls
+docker images ls
+
+#docker firewall
+sudo yum install firewalld
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+sudo firewall-cmd --zone=public --add-port=3333/tcp
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --reload
+
+#check service port
+netstat -tulpn | grep LISTEN
+
+server {
+    listen 80;
+    server_name http://134.209.107.205;
+
+    location / {
+        proxy_pass http://134.209.107.205:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+มัน Start ให้เอง ไม่ต้องติดตั้ง pm2
+
+
+
+

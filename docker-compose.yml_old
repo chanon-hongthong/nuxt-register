@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  nuxt:
+    image: chanon1986/nuxt-register
+    container_name: nuxt-register
+    restart: always
+    ports:
+      - "80:3000"
+    command:
+      "npm run start"
+
+  nginx:
+    image: nginx:1.13
+    container_name: nuxt-register-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - nuxt

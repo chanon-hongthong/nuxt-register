@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  nuxt:
+    image: chanon1986/nuxt-register
+    container_name: nuxt-register
+    restart: always
+    ports:
+      - "80:3000"
+    command:
+      "npm run start"
