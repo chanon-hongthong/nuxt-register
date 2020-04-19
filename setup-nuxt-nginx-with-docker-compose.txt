@@ -1,5 +1,16 @@
 #SETUP NUXT JS-REGISTER Firebase Run on Nginx HTTP
 
+#github public
+git add .
+git commit -m "about app"
+git push git push origin master
+
+#github private
+git commit -m "first commit"
+git remote add origin https://github.com/chanon-hongthong/nuxt-register.git
+git push -u origin master
+
+#docker
 docker login
 สร้าง Repository บน Docker Hub ให้ชื่อตรงกัน
 docker build -t chanon1986/nuxt-register .

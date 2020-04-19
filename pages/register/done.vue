@@ -38,7 +38,7 @@ export default {
     },
     methods:{
         workshop(){
-            this.$router.push('/register/workshop')
+            this.$router.push('/workshop')
         },
         close(){
 

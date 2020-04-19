@@ -1,7 +1,5 @@
 FROM node:12.16.2
 
-MAINTAINER Chanon Hongthong
-
 LABEL "version"="1.0.0"
 
 ENV APP_ROOT /src
