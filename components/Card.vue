@@ -1,5 +1,6 @@
 <template>
     <v-card class="mx-auto" :class="active == 1 ? 'active' : ''" max-width="400">
+            
             <v-img
               class="white--text align-end"
               height="200px"
@@ -11,9 +12,9 @@
             <div class="card-content">
               <div>
                 <v-card-text class="text--primary">
-                  <h1>Design Thinking 1</h1>
+                  <h1>{{ sessions.title }}</h1>
                 </v-card-text>
-                <v-card-subtitle class="pt-0">Subject 1</v-card-subtitle>
+                <v-card-subtitle class="pt-0">{{ sessions.spaker }}</v-card-subtitle>
               </div>
 
               <v-btn class="circle" @click="$emit('chooseWorkshop')">
@@ -84,6 +85,6 @@
 
 <script>
 export default {
-    props: ['active']
+    props: ['active','sessions']
 }
 </script>

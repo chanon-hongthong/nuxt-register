@@ -183,7 +183,7 @@ export default {
                 this.$store.dispatch('setRegister', this.form)
                 this.$axios.patch(`https://mic-connect.firebaseio.com/members/line:0002/profile.json`,this.$store.getters.getRegister).then((res) => {
                     this.$router.push('/register/done')
-                })
+                }).catch(e => console.log(e))
                 //this.$axios.post(`https://mic-connect.firebaseio.com/members/line:0001/profile.json`,this.$store.getters.getRegister)
             }
         }

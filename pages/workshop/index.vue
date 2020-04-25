@@ -8,46 +8,57 @@
       <v-row>
         <v-col cols="12" class="pt-0 pb-0">
           <div class="mt-3 text-primary text-title text-center">
-            20 April 2020
+            {{ list.date }}
           </div>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12">
-            <Card :active="selectedWorkshop==1" v-on:moreDetail="moreDetail" v-on:chooseWorkshop="chooseWorkshop(1)" />
-            <Card :active="selectedWorkshop==2" v-on:moreDetail="moreDetail" v-on:chooseWorkshop="chooseWorkshop(2)" />
+            <Card v-for="item in list.sessions"
+              :sessions="item"
+              :key="item.id"
+              :active="selectedWorkshop.includes(item.id)" 
+              v-on:moreDetail="moreDetail(item)"
+              v-on:chooseWorkshop="chooseWorkshop(item)" />
         </v-col>
 
         <v-col cols="12">
-          <v-btn rounded color="primary" dark class="w-100 my-btn" @click="next"     
-            >Next</v-btn
-          >
+          <v-btn v-if="index != workshops.length - 1" rounded color="primary" dark class="w-100 my-btn" @click="next"     
+            >Next</v-btn>
+          <div v-if="index > 0" class="w-100 text-center my-btn text-primary" @click="back">Back</div> 
+        </v-col>
+
+        <v-col cols="12">
+          <v-btn v-if="selectedWorkshop.length != 0" rounded color="success" dark class="w-100 my-btn" @click="done"     
+            >Done</v-btn>
         </v-col>
       </v-row>
 
-      <v-dialog v-model="dialog" max-width="290">
+      <v-dialog v-model="IsShowDialog" max-width="290">
         <v-card>
           <v-img
             class="white--text align-end"
             height="200px"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+            :src="dialog.image"
           >
           </v-img>
 
           <v-card-title class="headline"
-            >Use Google's location service?</v-card-title
+            >{{ dialog.title }}</v-card-title
           >
 
           <v-card-text>
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            <p>{{ dialog.time }}</p>
+            {{ dialog.detail }}
+            <v-spacer></v-spacer>
+            <p><span v-html="dialog.spakers"></span></p>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn color="green darken-1" text @click="dialog = false">
+            <v-btn color="green darken-1" text @click="IsShowDialog = false">
               OK
             </v-btn>
           </v-card-actions>
@@ -76,20 +87,52 @@ export default {
   },
   data() {
     return {
-      dialog: false,
-      selectedWorkshop: 0
+      IsShowDialog: false,
+      index: 0,
+      dialog:{
+        title: '',
+        image: '',
+        detail: '',
+        time: '',
+        spakers: '',
+        place: ''
+      },
+      selectedWorkshop: [],
+      list: [],
+      workshops: this.$store.getters.getWorkshop
     };
   },
+  mounted(){
+    this.list = this.workshops[this.index]
+  },
   methods: {
-    next() {
-      this.$router.push("/workshop/more");
+    next() { 
+      this.list = this.workshops[this.index += 1]
     },
-    moreDetail() {
-      this.dialog = true;
+    back(){
+      this.list = this.workshops[this.index -= 1]
     },
-    chooseWorkshop(id){
-        this.selectedWorkshop = id
+    done(){
+      this.$axios.patch(`https://mic-connect.firebaseio.com/workshop/line:0002.json`, { ...this.selectedWorkshop })
+      .then((res) => {
+        this.$router.push('/workshop/done')
+      }).catch(e => console.log(e))
+    },
+    moreDetail(item) {
+      this.IsShowDialog = true
+      this.dialog = item
+    },
+    chooseWorkshop(item){
+        const listId = this.list.sessions.map(session => session.id)
+        if(this.selectedWorkshop.includes(item.id)){
+          //item already in array do remove
+          this.selectedWorkshop.splice(this.selectedWorkshop.indexOf(item.id), 1);
+        }else{
+          this.selectedWorkshop = this.selectedWorkshop.filter(session => !listId.includes(session))
+          this.selectedWorkshop.push(item.id)
+        }
     }
   }
 };
+
 </script>
